@@ -4,4 +4,4 @@ containers-up:
 
 .PHONY: containers-down
 containers-down:
-	docker-compose down -d
+	docker-compose down
