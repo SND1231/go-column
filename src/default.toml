@@ -1,0 +1,6 @@
+type = "mysql2"
+host = "localhost2"
+port = 3307
+user = "default"
+password = "default_pass"
+name = "default"
