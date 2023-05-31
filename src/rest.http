@@ -1,0 +1,8 @@
+POST http://localhost:3020/user/add
+content-type: application/json
+{
+    "name": "taro",
+    "age": 18
+}
+
+GET http://localhost:3020/user/detail?id=1500
