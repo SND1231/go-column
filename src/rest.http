@@ -2,8 +2,8 @@ POST http://localhost:3020/user/add
 content-type: application/json
 
 {
-    "name": "taro",
-    "age": 18
+    "name": "jiro",
+    "age": 25
 }
 
 ###

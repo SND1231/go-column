@@ -1,0 +1,7 @@
+[mysql]
+  dbname  = "test"
+  host    = "mysql"
+  port    = 3306
+  user    = "root"
+  pass    = "test"
+  sslmode = "false"

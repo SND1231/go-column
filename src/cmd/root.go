@@ -9,30 +9,22 @@ import (
 	"os"
 
 	"github.com/SND1231/go-column/router"
+	"github.com/SND1231/go-column/setting"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
-type Config struct {
-	Type     string
-	Host     string
-	Port     int
-	User     string
-	Password string
-	Name     string
-}
-
-var config Config
+var dbSetting setting.DB
 
 var rootCmd = &cobra.Command{
 	Use: "go-column",
 	Run: func(cmd *cobra.Command, args []string) {
 		// configの中身を出力
 		log.Printf("configの中身:{type: %s, host: %s, port: %d, user: %s, pass: %s, name: %s}",
-			config.Type, config.Host, config.Port, config.User, config.Password, config.Name)
+			dbSetting.Type, dbSetting.Host, dbSetting.Port, dbSetting.User, dbSetting.Password, dbSetting.Name)
 
 		// サーバーの設定
-		r := router.Get()
+		r := router.Get(dbSetting)
 		srv := &http.Server{
 			Addr:    ":3020",
 			Handler: r,
@@ -70,7 +62,7 @@ func initConfig() {
 	}
 
 	// 設定ファイルの内容を構造体に設定
-	if err := viper.Unmarshal(&config); err != nil {
+	if err := viper.Unmarshal(&dbSetting); err != nil {
 		log.Println(err)
 		os.Exit(1)
 	}
