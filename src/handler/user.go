@@ -15,21 +15,18 @@ func NewUserHandler() *UserHandler {
 }
 
 // 失敗時のレスポンスの設定
-func setErrorResponse(w http.ResponseWriter, status int) http.ResponseWriter {
+func setErrorResponse(w http.ResponseWriter, status int) {
 	// レスポンスのヘッダ設定
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 
-	// エラーだったらステータス500で返す
-	//w.WriteHeader(http.StatusInternalServerError)
+	// 引数のステータス設定
 	w.WriteHeader(status)
-	return w
 }
 
 // 成功時のレスポンスの設定
-func setSuccessResponse(w http.ResponseWriter, res []byte) http.ResponseWriter {
+func setSuccessResponse(w http.ResponseWriter, res []byte) {
 	// レスポンスの内容をjsonに変換
 	w.Write(res)
-	return w
 }
 
 // ユーザーの作成APIのリクエスト
