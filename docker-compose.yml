@@ -8,3 +8,15 @@ services:
         - ./src:/work
     working_dir: /work
     tty: true
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: test
+      TZ: Asia/Tokyo
+    volumes:
+      - ./volumes/mysql/db:/var/lib/mysql
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci

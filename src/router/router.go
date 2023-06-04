@@ -2,14 +2,15 @@ package router
 
 import (
 	"github.com/SND1231/go-column/handler"
+	"github.com/SND1231/go-column/setting"
 	"github.com/go-chi/chi"
 )
 
-func Get() *chi.Mux {
+func Get(dbSetting setting.DB) *chi.Mux {
 	r := chi.NewRouter()
 
 	// ハンドラーの初期化
-	userHandler := handler.NewUserHandler()
+	userHandler := handler.NewUserHandler(dbSetting)
 
 	// httpルーティング
 	r.Route("/user", func(r chi.Router) {

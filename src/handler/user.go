@@ -1,17 +1,25 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"log"
 	"net/http"
 
+	"github.com/SND1231/go-column/db"
+	"github.com/SND1231/go-column/setting"
+	"github.com/SND1231/go-column/usecase"
 	"github.com/mholt/binding"
 )
 
-type UserHandler struct{}
+type UserHandler struct {
+	dbSetting setting.DB
+}
 
-func NewUserHandler() *UserHandler {
-	return &UserHandler{}
+func NewUserHandler(dbSetting setting.DB) *UserHandler {
+	return &UserHandler{
+		dbSetting: dbSetting,
+	}
 }
 
 // 失敗時のレスポンスの設定
@@ -29,36 +37,15 @@ func setSuccessResponse(w http.ResponseWriter, res []byte) {
 	w.Write(res)
 }
 
-// ユーザーの作成APIのリクエスト
-type AddUserInput struct {
-	Name string
-	Age  int
-}
-
-// リクエストのマッピング。ポインターレシーバーにすること
-func (input *AddUserInput) FieldMap(r *http.Request) binding.FieldMap {
-	return binding.FieldMap{
-		&input.Name: "name",
-		&input.Age:  "age",
-	}
-}
-
-// ユーザーの作成APIのレスポンス
-type AddUserOutput struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-}
-
 // ユーザーの作成API
 func (h *UserHandler) Add(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var berr binding.Errors
-	var response *AddUserOutput
+	var response usecase.AddUserOutput
 	var res []byte
 
 	// request -> AddUserInput型に変換
-	var request AddUserInput
+	var request usecase.AddUserInput
 	berr = binding.Bind(r, &request)
 	if berr != nil {
 		log.Println(berr)
@@ -66,12 +53,38 @@ func (h *UserHandler) Add(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// responseの作成
-	response = &AddUserOutput{
-		ID:   1,
-		Name: request.Name,
-		Age:  request.Age,
+	ctx := context.Background()
+
+	// dbのコネクション設定
+	conn, err := db.GetDBconnection(h.dbSetting)
+	if err != nil {
+		log.Println(err)
+		return
 	}
+	// コネクションのクローズ
+	defer func() {
+		conn.Close()
+	}()
+
+	// トランザクションの開始
+	tx, err := conn.BeginTx(ctx, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	// トランザクションのコミット or ロールバック
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		tx.Commit()
+	}()
+
+	// usecaseの初期化
+	userUsecase := usecase.NewUserUsecase(ctx, tx)
+	// ユーザー作成実施
+	response, err = userUsecase.Add(request)
 
 	// レスポンスをjsonに変換
 	res, err = json.Marshal(response)
@@ -83,34 +96,15 @@ func (h *UserHandler) Add(w http.ResponseWriter, r *http.Request) {
 	setSuccessResponse(w, res)
 }
 
-// ユーザーの詳細取得APIのリクエスト
-type GetUserInput struct {
-	ID int
-}
-
-// リクエストのマッピング。ポインターレシーバーにすること
-func (input *GetUserInput) FieldMap(r *http.Request) binding.FieldMap {
-	return binding.FieldMap{
-		&input.ID: "id",
-	}
-}
-
-// ユーザーの詳細取得APIのレスポンス
-type GetUserOutput struct {
-	ID   int    `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-}
-
 // ユーザーの詳細取得API
 func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var berr binding.Errors
-	var response *GetUserOutput
+	var response usecase.GetUserOutput
 	var res []byte
 
 	// request -> GetUserInput型に変換
-	var request GetUserInput
+	var request usecase.GetUserInput
 	berr = binding.Bind(r, &request)
 	if berr != nil {
 		log.Println(berr)
@@ -118,12 +112,37 @@ func (h *UserHandler) Get(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// responseの作成
-	response = &GetUserOutput{
-		ID:   request.ID,
-		Name: "Jony",
-		Age:  45,
+	ctx := context.Background()
+
+	// dbのコネクション設定
+	conn, err := db.GetDBconnection(h.dbSetting)
+	if err != nil {
+		log.Println(err)
+		return
 	}
+	// コネクションのクローズ
+	defer func() {
+		conn.Close()
+	}()
+
+	// トランザクションの開始
+	tx, err := conn.BeginTx(ctx, nil)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	// トランザクションのコミット or ロールバック
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		tx.Commit()
+	}()
+
+	// usecaseの初期化
+	userUsecase := usecase.NewUserUsecase(ctx, tx)
+	response, err = userUsecase.Get(request)
 
 	// レスポンスをjsonに変換
 	res, err = json.Marshal(response)
