@@ -14,6 +14,10 @@ RUN apt-get update \
 # cobraのCLIをインストール
 RUN go install github.com/spf13/cobra-cli@latest
 
+# sqlboilerコマンドをインストール
+RUN go install github.com/volatiletech/sqlboiler/v4@latest
+RUN go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql@latest
+
 RUN pwd
 COPY src/go.mod src/go.sum ./
 RUN go mod download && go mod verify

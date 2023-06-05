@@ -3,7 +3,6 @@ services:
   go-env:
     build:
       context: .
-    image: golang:1.19-bullseye
     volumes:
         - ./src:/work
     working_dir: /work
