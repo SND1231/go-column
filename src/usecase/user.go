@@ -45,6 +45,7 @@ type AddUserOutput struct {
 	Age  int    `json:"age"`
 }
 
+// ユーザーを作成
 func (u UserUsecase) Add(input AddUserInput) (AddUserOutput, error) {
 	user := models.User{
 		Name: input.Name,
@@ -81,6 +82,7 @@ type GetUserOutput struct {
 	Age  int    `json:"age"`
 }
 
+// ユーザー情報の取得
 func (u UserUsecase) Get(input GetUserInput) (GetUserOutput, error) {
 	user, err := models.FindUser(u.ctx, u.tx, input.ID)
 	if err != nil {

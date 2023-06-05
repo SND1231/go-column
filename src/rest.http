@@ -1,11 +1,13 @@
+# ユーザーの作成API
 POST http://localhost:3020/user/add
 content-type: application/json
 
 {
-    "name": "jiro",
-    "age": 25
+    "name": "test",
+    "age": 30
 }
 
 ###
 
-GET http://localhost:3020/user/detail?id=1500
+# ユーザー情報の取得API
+GET http://localhost:3020/user/detail?id=7
