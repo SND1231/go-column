@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/SND1231/go-column/setting"
-	//_ "github.com/go-sql-driver/mysql"
 )
 
 func GetDBconnection(dbSetting setting.DB) (*sql.DB, error) {
