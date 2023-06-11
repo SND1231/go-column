@@ -14,6 +14,7 @@ import (
 )
 
 func TestAdd(t *testing.T) {
+	// テスト用のDB接続取得
 	testDB := db.NewUnitTestDB()
 
 	// Inputの情報で作成した後に、作成されたユーザーIDを元にユーザーを取得して、Wantと比較する。
@@ -46,10 +47,13 @@ func TestAdd(t *testing.T) {
 
 				user, _ := models.FindUser(ctx, tx, output.ID)
 
+				// IDは何が入るかわからないので、比較する絡むから外す。
 				opts := []cmp.Option{
 					cmpopts.IgnoreFields(models.User{}, "ID"),
 				}
 
+				// 作成したユーザーと、求める結果の比較をしている。
+				// 差があった場合にエラーにしている。
 				if diff := cmp.Diff(user, c.Want, opts...); diff != "" {
 					t.Errorf(diff)
 				}
@@ -59,6 +63,7 @@ func TestAdd(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
+	// テスト用のDB接続取得
 	testDB := db.NewUnitTestDB()
 
 	// Getした結果とWantの情報を比較する
@@ -89,6 +94,8 @@ func TestGet(t *testing.T) {
 					t.Fatal("error:", err)
 				}
 
+				// 取得したユーザーと、求める結果の比較をしている。
+				// 差があった場合にエラーにしている。
 				if diff := cmp.Diff(output, c.Want); diff != "" {
 					t.Errorf(diff)
 				}
