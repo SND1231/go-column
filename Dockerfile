@@ -1,4 +1,4 @@
-FROM golang:1.19-bullseye
+FROM golang:1.20-bullseye
 WORKDIR /work
 
 RUN apt-get update \
@@ -17,6 +17,9 @@ RUN go install github.com/spf13/cobra-cli@latest
 # sqlboilerコマンドをインストール
 RUN go install github.com/volatiletech/sqlboiler/v4@latest
 RUN go install github.com/volatiletech/sqlboiler/v4/drivers/sqlboiler-mysql@latest
+
+# 脆弱性チェッカーをインストール
+RUN go install golang.org/x/vuln/cmd/govulncheck@latest
 
 RUN pwd
 COPY src/go.mod src/go.sum ./

@@ -12,3 +12,7 @@ test:
 	go clean -testcache
 	# shuffle=onでランダムに実行され、coverでテストのカバレッジを測定している。
 	go test -shuffle=on -cover ./usecase
+
+.PHONY: checkvuln
+checkvuln:
+	govulncheck ./...
