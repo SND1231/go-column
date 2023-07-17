@@ -1,6 +1,6 @@
 module github.com/SND1231/go-column
 
-go 1.19
+go 1.20
 
 require (
 	github.com/friendsofgo/errors v0.9.2
