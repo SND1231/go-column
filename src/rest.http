@@ -10,4 +10,4 @@ content-type: application/json
 ###
 
 # ユーザー情報の取得API
-GET http://localhost:3020/user/detail?id=7
+GET http://localhost:3020/user/detail?id=8

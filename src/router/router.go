@@ -14,7 +14,7 @@ func Get(dbSetting setting.DB) *chi.Mux {
 
 	// ハンドラーの初期化
 	userHandler := handler.NewUserHandler(dbSetting)
-	printDBsetting := makePrintDbSetting(dbSetting)
+	printDBsetting := makePrintDBSetting(dbSetting)
 
 	r.Use(printDBsetting)
 	// httpルーティング
@@ -25,13 +25,13 @@ func Get(dbSetting setting.DB) *chi.Mux {
 	return r
 }
 
-func makePrintDbSetting(dbSetting setting.DB) func(http.Handler) http.Handler {
+func makePrintDBSetting(dbSetting setting.DB) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
-		return print(next, dbSetting)
+		return printDBSetting(next, dbSetting)
 	}
 }
 
-func print(next http.Handler, dbSetting setting.DB) http.Handler {
+func printDBSetting(next http.Handler, dbSetting setting.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("type:%s, host:%s", dbSetting.Type, dbSetting.Host)
 		next.ServeHTTP(w, r)
